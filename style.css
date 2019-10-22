@@ -3,12 +3,17 @@ body {
     overflow: hidden;
 }
 #container {
-    width: 80%;
+    width: 98%;
     height: 90vh;
     padding-bottom: 5vh;
-    padding-left: 5%;
     margin: 3vh auto;
     text-align: center;
     color: #fff;
-    background-color: darkviolet;
+}
+.cell {
+    stroke-width: 0;
+    stroke: black;
+}
+.cell:hover {
+    stroke-width: 1;
 }
