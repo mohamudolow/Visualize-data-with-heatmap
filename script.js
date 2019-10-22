@@ -1,8 +1,8 @@
 var url = 'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/global-temperature.json';
 var heatmapGraph = document.getElementById('heatmapGraph');
-var width = 0.9 * heatmapGraph.parentElement.clientWidth;
-var height = 0.86 * heatmapGraph.parentElement.clientHeight;
-var padding = {"top": 10, "right": 10, "bottom": 30, "left": 80};
+var width = 0.98 * Math.floor(heatmapGraph.parentElement.clientWidth);
+var height = 0.86 * Math.floor(heatmapGraph.parentElement.clientHeight);
+var padding = {"top": 10, "right": 10, "bottom": 40, "left": 60};
 
 var svg = d3.select('#heatmapGraph')
 .append('svg')
@@ -12,14 +12,15 @@ var svg = d3.select('#heatmapGraph')
 //reload the page when window size changes so that svg dimensions can be adjusted accordingly
 window.onresize = () => location.reload();
 
-const drawGraph = (data) => {
-    
-    //yAxisScale.domain(data, d => d.variance);
+//function to draw the graph
+const drawGraph = (dataset) => {
+    var data = dataset.monthlyVariance;
+    var baseTemperature = dataset.baseTemperature;
     
     //define x-axis scale
     var xAxisScale = d3.scaleLinear()
     .domain([d3.min(data, d => d.year), d3.max(data, d => d.year)])
-    .range([0, width]);
+    .range([0, width-padding.left-padding.right]);
     
     //set up the x axis orientation
     var xAxis = d3.axisBottom(xAxisScale).tickFormat(d3.format('d'));
@@ -40,13 +41,33 @@ const drawGraph = (data) => {
     });
     
     svg.append('g')
-    .attr('transform', 'translate('+ padding.left +', '+ padding.right + ')')
+    .attr('transform', 'translate('+ padding.left +', '+ padding.top + ')')
     .call(yAxis);
+    
+    var barWidth = width/(data.length/12);
+    var barHeight = height/12;
+        
+    //define color scale for the bars
+    var colorScale = d3.scaleSequential(d3.interpolateRdBu).domain(d3.extent(data, d => d.variance));
+    
+    svg.selectAll('rect')
+    .data(data)
+    .enter()
+    .append('rect')
+    .attr('class', 'cell')
+    .attr('width', barWidth)
+    .attr('height', barHeight)
+    .attr('x', d => xAxisScale(d.year))
+    .attr('y', d => yAxisScale(d.month))
+    .attr('transform', 'translate('+ padding.left + ',' + padding.top +')')
+    .style('fill', (d, i) => colorScale(d.variance))
+    .append('title')
+    .text(d => d.variance);
 }
 
-d3.json(url).then(data => {
-    var data = data.monthlyVariance;
-    drawGraph(data);
+
+d3.json(url).then(dataset => {
+    drawGraph(dataset);
 }).catch(error => {
     console.log(error);
 });
