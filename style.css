@@ -10,10 +10,23 @@ body {
     text-align: center;
     color: #fff;
 }
+h1 {
+    font-size: 160%;
+}
 .cell {
     stroke-width: 0;
     stroke: black;
 }
 .cell:hover {
     stroke-width: 1;
+}
+div.tooltip {
+    position: absolute;
+    background-color: steelblue;
+    color: #fff;
+    padding: 10px;
+    border: 0px;
+    border-radius: 15px;
+    pointer-events: none;
+    z-index: 3;
 }
