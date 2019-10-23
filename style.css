@@ -12,6 +12,10 @@ body {
 }
 h1 {
     font-size: 160%;
+    margin: 0;
+}
+h4 {
+    margin: 0
 }
 .cell {
     stroke-width: 0;
@@ -28,5 +32,4 @@ div.tooltip {
     border: 0px;
     border-radius: 15px;
     pointer-events: none;
-    z-index: 3;
 }
