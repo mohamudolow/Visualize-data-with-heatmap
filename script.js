@@ -4,13 +4,29 @@ var width = 0.98 * Math.floor(heatmapGraph.parentElement.clientWidth);
 var height = 0.86 * Math.floor(heatmapGraph.parentElement.clientHeight);
 var padding = {"top": 10, "right": 10, "bottom": 40, "left": 60};
 
+//define svg container
 var svg = d3.select('#heatmapGraph')
 .append('svg')
 .attr('width', width)
 .attr('height', height);
 
+//define tooltip div
+var div = d3.select('#heatmapGraph')
+.append('div')
+.attr('class', 'tooltip')
+.style('opacity', 0);
+
 //reload the page when window size changes so that svg dimensions can be adjusted accordingly
 window.onresize = () => location.reload();
+
+
+//get month of the year for y axis tick values
+const formatMonth = month => {
+        var date = new Date(0);
+        date.setUTCMonth(month);
+        return d3.timeFormat('%B')(date);
+    };
+
 
 //function to draw the graph
 const drawGraph = (dataset) => {
@@ -34,11 +50,7 @@ const drawGraph = (dataset) => {
     var yAxisScale = d3.scaleBand()
     .domain(data.map(d => d.month))
     .rangeRound([height-padding.top-padding.bottom, 0]);
-    var yAxis = d3.axisLeft(yAxisScale).tickValues(yAxisScale.domain()).tickFormat(month => {
-        var date = new Date(0);
-        date.setUTCMonth(month);
-        return d3.timeFormat('%B')(date);
-    });
+    var yAxis = d3.axisLeft(yAxisScale).tickValues(yAxisScale.domain()).tickFormat(formatMonth);
     
     svg.append('g')
     .attr('transform', 'translate('+ padding.left +', '+ padding.top + ')')
@@ -50,6 +62,7 @@ const drawGraph = (dataset) => {
     //define color scale for the bars
     var colorScale = d3.scaleSequential(d3.interpolateRdBu).domain(d3.extent(data, d => d.variance));
     
+    //define cells
     svg.selectAll('rect')
     .data(data)
     .enter()
@@ -61,8 +74,15 @@ const drawGraph = (dataset) => {
     .attr('y', d => yAxisScale(d.month))
     .attr('transform', 'translate('+ padding.left + ',' + padding.top +')')
     .style('fill', (d, i) => colorScale(d.variance))
-    .append('title')
-    .text(d => d.variance);
+    .on('mouseover', d => {
+        div.style('opacity', 0.8)
+        .style('left', (d3.event.pageX + padding.right) + 'px')
+        .style('top', (d3.event.pageY-padding.bottom) + 'px')
+        .html('<p>' + formatMonth(d.month) + ', ' + d.year + '</p><p>Temp: ' + Number(baseTemperature + d.variance).toFixed(1) + '<sup>&#176;</sup>C</p><p>Variance: ' + d.variance.toFixed(1) + '</p>');
+})
+    .on('mouseout', d => {
+        div.style('opacity', 0);
+    });
 }
 
 
