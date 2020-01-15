@@ -2,7 +2,7 @@ var url = 'https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/m
 var heatmapGraph = document.getElementById('heatmapGraph');
 var width = 0.98 * Math.floor(heatmapGraph.parentElement.clientWidth);
 var height = 0.86 * Math.floor(heatmapGraph.parentElement.clientHeight);
-var padding = {"top": 10, "right": 10, "bottom": 40, "left": 60};
+var padding = {"top": 10, "right": 10, "bottom": 60, "left": 70};
 
 //define svg container
 var svg = d3.select('#heatmapGraph')
@@ -44,6 +44,7 @@ const drawGraph = (dataset) => {
     //append the x axis to svg
     svg.append("g")
         .attr('transform', 'translate('+ padding.left +', '+ (height-padding.bottom) + ')')
+        .style('font-size', '12px')
         .call(xAxis);
 
     //define y-axis scale
@@ -54,6 +55,7 @@ const drawGraph = (dataset) => {
 
     svg.append('g')
         .attr('transform', 'translate('+ padding.left +', '+ padding.top + ')')
+        .style('font-size', '13px')
         .call(yAxis);
 
     var barWidth = width/(data.length/12);

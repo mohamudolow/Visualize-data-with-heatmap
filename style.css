@@ -1,5 +1,8 @@
 body {
-    background-color: cadetblue;
+    background-color: rgba(0, 0, 255, 0.53);
+        //#535c68;
+        /*rgba(48, 51, 107, 0.85);*/
+    font-size: 120%;
     overflow: hidden;
 }
 #container {
